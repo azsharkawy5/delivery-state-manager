@@ -118,9 +118,14 @@ func (h *Handler) updateDriverStatusHandler() gin.HandlerFunc {
 			return
 		}
 
-		driver, _ := h.driverUC.GetDriver(id)
-		log.Printf("Driver status updated: %s -> %s", id, req.Status)
+		driver, err := h.driverUC.GetDriver(id)
+		if err != nil {
+			log.Printf("Failed to retrieve updated driver %s: %v", id, err)
+			c.JSON(http.StatusInternalServerError, errorResponse{Error: "Failed to retrieve updated driver"})
+			return
+		}
 
+		log.Printf("Driver status updated: %s -> %s", id, req.Status)
 		c.JSON(http.StatusOK, driver)
 	}
 }
@@ -190,9 +195,14 @@ func (h *Handler) updateOrderStatusHandler() gin.HandlerFunc {
 			return
 		}
 
-		order, _ := h.orderUC.GetOrder(id)
-		log.Printf("Order status updated: %s -> %s", id, req.Status)
+		order, err := h.orderUC.GetOrder(id)
+		if err != nil {
+			log.Printf("Failed to retrieve updated order %s: %v", id, err)
+			c.JSON(http.StatusInternalServerError, errorResponse{Error: "Failed to retrieve updated order"})
+			return
+		}
 
+		log.Printf("Order status updated: %s -> %s", id, req.Status)
 		c.JSON(http.StatusOK, order)
 	}
 }
