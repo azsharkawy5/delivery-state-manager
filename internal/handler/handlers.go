@@ -41,6 +41,12 @@ func (h *Handler) SetupRouter() *gin.Engine {
 	r.GET("/drivers/:id", h.getDriverHandler())
 	r.PATCH("/drivers/:id/status", h.updateDriverStatusHandler())
 
+	// Order endpoints
+	r.POST("/orders", h.createOrderHandler())
+	r.GET("/orders", h.getAllOrdersHandler())
+	r.GET("/orders/:id", h.getOrderHandler())
+	r.PATCH("/orders/:id/status", h.updateOrderStatusHandler())
+
 	return r
 }
 
@@ -113,5 +119,77 @@ func (h *Handler) updateDriverStatusHandler() gin.HandlerFunc {
 		log.Printf("Driver status updated: %s -> %s", id, req.Status)
 
 		c.JSON(http.StatusOK, driver)
+	}
+}
+
+// createOrderHandler handles POST /orders
+func (h *Handler) createOrderHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var order models.Order
+		if err := c.ShouldBindJSON(&order); err != nil {
+			c.JSON(http.StatusBadRequest, errorResponse{Error: "Invalid request body"})
+			return
+		}
+
+		if err := h.orderUC.CreateOrder(&order); err != nil {
+			c.JSON(http.StatusBadRequest, errorResponse{Error: err.Error()})
+			return
+		}
+
+		log.Printf("Order created: %s for customer %s", order.ID, order.Customer)
+		c.JSON(http.StatusCreated, order)
+	}
+}
+
+// getAllOrdersHandler handles GET /orders
+func (h *Handler) getAllOrdersHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		orders := h.orderUC.GetAllOrders()
+		c.JSON(http.StatusOK, orders)
+	}
+}
+
+// getOrderHandler handles GET /orders/:id
+func (h *Handler) getOrderHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id := c.Param("id")
+
+		order, err := h.orderUC.GetOrder(id)
+		if err != nil {
+			c.JSON(http.StatusNotFound, errorResponse{Error: err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, order)
+	}
+}
+
+// updateOrderStatusHandler handles PATCH /orders/:id/status
+func (h *Handler) updateOrderStatusHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id := c.Param("id")
+
+		var req struct {
+			Status models.OrderStatus `json:"status"`
+		}
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, errorResponse{Error: "Invalid request body"})
+			return
+		}
+
+		if err := h.orderUC.UpdateOrderStatus(id, req.Status); err != nil {
+			if err == errs.ErrOrderNotFound {
+				c.JSON(http.StatusNotFound, errorResponse{Error: err.Error()})
+			} else {
+				c.JSON(http.StatusBadRequest, errorResponse{Error: err.Error()})
+			}
+			return
+		}
+
+		order, _ := h.orderUC.GetOrder(id)
+		log.Printf("Order status updated: %s -> %s", id, req.Status)
+
+		c.JSON(http.StatusOK, order)
 	}
 }
