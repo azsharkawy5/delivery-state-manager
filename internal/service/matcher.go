@@ -6,34 +6,22 @@ import (
 	"time"
 )
 
-// OrderRepository defines the interface for the order repository
-type OrderRepository interface {
-	GetPendingOrders() []*models.Order
-}
-
-// DriverRepository defines the interface for the driver repository
-type DriverRepository interface {
-	GetAvailableDrivers() []*models.Driver
-}
-
 // MatcherRepository defines the interface for the matching repository
 type MatcherRepository interface {
 	AssignOrderToDriver(orderID, driverID string) error
+	GetAvailableDrivers() []*models.Driver
+	GetPendingOrders() []*models.Order
 }
 
 // Matcher handles order-to-driver matching
 type Matcher struct {
-	repo       MatcherRepository
-	orderRepo  OrderRepository
-	driverRepo DriverRepository
+	repo MatcherRepository
 }
 
 // NewMatcher creates a new Matcher instance
-func NewMatcher(repo MatcherRepository, orderRepo OrderRepository, driverRepo DriverRepository) *Matcher {
+func NewMatcher(repo MatcherRepository) *Matcher {
 	return &Matcher{
-		repo:       repo,
-		orderRepo:  orderRepo,
-		driverRepo: driverRepo,
+		repo: repo,
 	}
 }
 
@@ -51,8 +39,8 @@ func (m *Matcher) StartMatcher(interval time.Duration) {
 
 // MatchOrders performs the actual matching logic
 func (m *Matcher) MatchOrders() {
-	pendingOrders := m.orderRepo.GetPendingOrders()
-	availableDrivers := m.driverRepo.GetAvailableDrivers()
+	pendingOrders := m.repo.GetPendingOrders()
+	availableDrivers := m.repo.GetAvailableDrivers()
 
 	if len(pendingOrders) == 0 {
 		return
