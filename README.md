@@ -259,13 +259,6 @@ Then run concurrent requests from multiple terminals to verify no race condition
 │   └── handler/                 # HTTP presentation layer
 │       ├── handlers.go          # REST API endpoints
 │       └── handlers_test.go     # Comprehensive endpoint tests
-├── test/                        # Integration tests
-│   └── test.sh                  # End-to-end test script
-├── docs/                        # Detailed documentation
-│   ├── QUICK_START.md           # Getting started guide
-│   ├── TECHNICAL_DOCUMENTATION.md # Comprehensive technical details
-│   ├── INTERVIEW_GUIDE.md       # Interview Q&A preparation
-│   └── ARCHITECTURE.md          # System architecture diagrams
 ├── main.go                      # Entry point with dependency wiring
 ├── go.mod                       # Go module definition
 └── README.md                    # This file
@@ -290,15 +283,12 @@ The project follows **Clean Architecture** principles with clear separation of c
 - ✅ Clear separation enables parallel development
 - ✅ Scales well as complexity grows
 
-See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed diagrams and explanations.
-
 ## Implementation Highlights
 
 - **Clean Architecture**: Layered design with dependency inversion
 - **Thread-safe**: `sync.RWMutex` for concurrent map access with defensive copying
 - **Zero external database**: All data kept in memory with atomic operations
 - **Validated transitions**: State machine enforces valid order status changes
-- **Comprehensive tests**: All endpoints tested with success and error cases
 - **Production-ready**: Environment config, structured logging, proper error handling
 - **RESTful API**: Resource-based design with proper HTTP status codes
 - **Background processing**: Goroutine-based matcher with safe concurrent access
