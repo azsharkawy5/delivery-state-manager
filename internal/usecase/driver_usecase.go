@@ -13,20 +13,20 @@ type DriverRepository interface {
 	UpdateDriverStatus(id string, status models.DriverStatus) error
 }
 
-// driverUseCase implements DriverUseCase
-type driverUseCase struct {
+// DriverUseCase handles driver-related use cases
+type DriverUseCase struct {
 	repo DriverRepository
 }
 
 // NewDriverUseCase creates a new DriverUseCase instance
-func NewDriverUseCase(repo DriverRepository) *driverUseCase {
-	return &driverUseCase{
+func NewDriverUseCase(repo DriverRepository) *DriverUseCase {
+	return &DriverUseCase{
 		repo: repo,
 	}
 }
 
 // CreateOrUpdateDriver creates or updates a driver
-func (uc *driverUseCase) CreateOrUpdateDriver(driver *models.Driver) error {
+func (uc *DriverUseCase) CreateOrUpdateDriver(driver *models.Driver) error {
 	// Validate required fields
 	if driver.ID == "" || driver.Name == "" {
 		return errs.ErrInvalidStatusUpdate
@@ -47,16 +47,16 @@ func (uc *driverUseCase) CreateOrUpdateDriver(driver *models.Driver) error {
 }
 
 // GetDriver retrieves a driver by ID
-func (uc *driverUseCase) GetDriver(id string) (*models.Driver, error) {
+func (uc *DriverUseCase) GetDriver(id string) (*models.Driver, error) {
 	return uc.repo.GetDriver(id)
 }
 
 // GetAllDrivers returns all drivers
-func (uc *driverUseCase) GetAllDrivers() []*models.Driver {
+func (uc *DriverUseCase) GetAllDrivers() []*models.Driver {
 	return uc.repo.GetAllDrivers()
 }
 
 // UpdateDriverStatus updates the status of a driver
-func (uc *driverUseCase) UpdateDriverStatus(id string, status models.DriverStatus) error {
+func (uc *DriverUseCase) UpdateDriverStatus(id string, status models.DriverStatus) error {
 	return uc.repo.UpdateDriverStatus(id, status)
 }

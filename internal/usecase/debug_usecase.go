@@ -9,7 +9,7 @@ type DebugRepository interface {
 	GetSnapshot() models.StateSnapshot
 }
 
-// debugUseCase implements DebugUseCase
+// DebugUseCase handles debug-related use cases
 type DebugUseCase struct {
 	repo DebugRepository
 }

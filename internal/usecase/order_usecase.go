@@ -13,7 +13,7 @@ type OrderRepository interface {
 	UpdateOrderStatus(id string, status models.OrderStatus) error
 }
 
-// OrderUseCase implements OrderUseCase
+// OrderUseCase handles order-related use cases
 type OrderUseCase struct {
 	repo OrderRepository
 }
