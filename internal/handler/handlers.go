@@ -17,13 +17,13 @@ type errorResponse struct {
 
 // Handler holds all use cases
 type Handler struct {
-	driverUC usecase.DriverUseCase
-	orderUC  usecase.OrderUseCase
-	debugUC  usecase.DebugUseCase
+	driverUC *usecase.DriverUseCase
+	orderUC  *usecase.OrderUseCase
+	debugUC  *usecase.DebugUseCase
 }
 
 // NewHandler creates a new Handler instance
-func NewHandler(driverUC usecase.DriverUseCase, orderUC usecase.OrderUseCase, debugUC usecase.DebugUseCase) *Handler {
+func NewHandler(driverUC *usecase.DriverUseCase, orderUC *usecase.OrderUseCase, debugUC *usecase.DebugUseCase) *Handler {
 	return &Handler{
 		driverUC: driverUC,
 		orderUC:  orderUC,
