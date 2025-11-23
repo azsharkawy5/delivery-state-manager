@@ -29,7 +29,7 @@ func NewOrderUseCase(repo OrderRepository) *OrderUseCase {
 func (uc *OrderUseCase) CreateOrder(order *models.Order) error {
 	// Validate required fields
 	if order.ID == "" || order.Customer == "" {
-		return errs.ErrInvalidStatusUpdate
+		return errs.ErrMissingRequiredField
 	}
 
 	uc.repo.CreateOrder(order)

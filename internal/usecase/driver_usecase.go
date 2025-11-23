@@ -29,7 +29,7 @@ func NewDriverUseCase(repo DriverRepository) *DriverUseCase {
 func (uc *DriverUseCase) CreateOrUpdateDriver(driver *models.Driver) error {
 	// Validate required fields
 	if driver.ID == "" || driver.Name == "" {
-		return errs.ErrInvalidStatusUpdate
+		return errs.ErrMissingRequiredField
 	}
 
 	// Validate status if provided
