@@ -34,5 +34,5 @@ func getDurationEnv(key string, defaultValue time.Duration) time.Duration {
 			return time.Duration(intVal) * time.Second
 		}
 	}
-	return time.Duration(defaultValue) * time.Second
+	return defaultValue
 }
