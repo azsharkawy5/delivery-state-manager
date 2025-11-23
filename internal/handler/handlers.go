@@ -47,6 +47,9 @@ func (h *Handler) SetupRouter() *gin.Engine {
 	r.GET("/orders/:id", h.getOrderHandler())
 	r.PATCH("/orders/:id/status", h.updateOrderStatusHandler())
 
+	// Debug endpoints
+	r.GET("/debug/state", h.getStateHandler())
+
 	return r
 }
 
@@ -191,5 +194,13 @@ func (h *Handler) updateOrderStatusHandler() gin.HandlerFunc {
 		log.Printf("Order status updated: %s -> %s", id, req.Status)
 
 		c.JSON(http.StatusOK, order)
+	}
+}
+
+// getStateHandler handles GET /debug/state
+func (h *Handler) getStateHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		snapshot := h.debugUC.GetSnapshot()
+		c.JSON(http.StatusOK, snapshot)
 	}
 }
