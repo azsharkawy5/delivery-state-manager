@@ -29,9 +29,11 @@ type Matcher struct {
 }
 
 // NewMatcher creates a new Matcher instance
-func NewMatcher(repo MatcherRepository) *Matcher {
+func NewMatcher(repo MatcherRepository, orderRepo OrderRepository, driverRepo DriverRepository) *Matcher {
 	return &Matcher{
-		repo: repo,
+		repo:       repo,
+		orderRepo:  orderRepo,
+		driverRepo: driverRepo,
 	}
 }
 
