@@ -3,6 +3,8 @@ package errs
 import "errors"
 
 var (
+	ErrInvalidInput         = errors.New("invalid input")
+	ErrMissingRequiredField = errors.New("missing required field")
 	ErrInvalidStatusUpdate  = errors.New("invalid status update")
 	ErrInvalidTransition    = errors.New("invalid state transition")
 	ErrDriverNotAvailable   = errors.New("driver is not available")
