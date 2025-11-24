@@ -35,6 +35,11 @@ func NewHandler(driverUC *usecase.DriverUseCase, orderUC *usecase.OrderUseCase, 
 func (h *Handler) SetupRouter() *gin.Engine {
 	r := gin.Default()
 
+	// Health check
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	})
+
 	// Driver endpoints
 	r.POST("/drivers", h.createOrUpdateDriverHandler())
 	r.GET("/drivers", h.getAllDriversHandler())
