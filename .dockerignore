@@ -1,0 +1,47 @@
+# Git files
+.git
+.gitignore
+
+# Documentation
+*.md
+docs/
+
+# Build artifacts
+bin/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test files
+*_test.go
+*.test
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.log
+
+# Code review and analysis
+CODE_REVIEW.md
+
+# Environment files (SECURITY: Never include in image)
+.env
+.env.*
+!.env.example
+
+# Docker files (not needed in image)
+Dockerfile
+.dockerignore
+docker-compose.yml
+
