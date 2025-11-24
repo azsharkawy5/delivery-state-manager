@@ -1,51 +1,37 @@
-# Stage 1: Build
+# Build stage
 FROM golang:1.24-alpine AS builder
 
-# Install build dependencies
-RUN apk add --no-cache git ca-certificates
+# Install git (used by some Go modules)
+RUN apk add --no-cache git
 
-# Set working directory
+# Application workspace
 WORKDIR /app
 
-# Copy go mod files
+# Cache dependencies
 COPY go.mod go.sum ./
-
-# Download dependencies
 RUN go mod download
 
-# Copy source code
+# Copy the rest of the code
 COPY . .
 
-# Build the application
-# CGO_ENABLED=0 for static binary
-# -ldflags="-w -s" to strip debug info and reduce size
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /app/bin/delivery-state-manager .
+# Build the binary in the same way as the working deployment
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./main.go
 
-# Stage 2: Runtime
+# Final stage
 FROM alpine:latest
 
-# Install ca-certificates for HTTPS requests if needed
+# Only ca-certificates are required at runtime
 RUN apk --no-cache add ca-certificates
 
-# Create non-root user for security
-RUN addgroup -g 1000 appuser && \
-    adduser -D -u 1000 -G appuser appuser
+# Match the working deployment layout
+WORKDIR /root/
 
-# Set working directory
-WORKDIR /app
+# Copy the compiled binary
+COPY --from=builder /app/main .
 
-# Copy binary from builder
-COPY --from=builder /app/bin/delivery-state-manager /app/delivery-state-manager
-
-# Change ownership to non-root user
-RUN chown -R appuser:appuser /app
-
-# Switch to non-root user
-USER appuser
-
-# Expose the application port
+# Expose service port
 EXPOSE 8080
 
-# Run the application
-CMD ["/app/delivery-state-manager"]
+# Run the service
+CMD ["./main"]
 
